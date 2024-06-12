@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS user_details (
     fname VARCHAR(255),
     lname VARCHAR(255),
     address TEXT,
-    age INT CHECK(age > 0),
+    age INT DEFAULT 0 CHECK(age>=0),
     phone_number VARCHAR(20)
 );
 
@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS user_details (
 CREATE TABLE IF NOT EXISTS books (
     books_id SERIAL PRIMARY KEY,
     book_name VARCHAR(255) NOT NULL,
-    stock INT NOT NULL CHECK(stock >= 0),
-    rental_cost DECIMAL(10, 2) CHECK(rental_cost>0),
+    stock INT NOT NULL DEFAULT 0 CHECK(stock>=0),
+    rental_cost DECIMAL(10, 2) DEFAULT 0 CHECK(rental_cost>=0),
     category VARCHAR(255),
     description TEXT,
     author VARCHAR(255) NOT NULL,
