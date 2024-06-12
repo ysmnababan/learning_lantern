@@ -23,9 +23,7 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 	repo := &repository.Repo{DB: db}
 
 	uc := &controller.UserController{UserRepo: repo}
-	// wc := &controller.WorkoutController{WorkoutRepo: repo}
-	// lc := &controller.LogController{LogRepo: repo}
-	// ec := &controller.ExerciseController{ER: repo}
+	bc := &controller.BookController{BookRepo: repo}
 
 	// no need authorization
 	e.POST("/api/users/register", uc.Register)
@@ -36,25 +34,18 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 	// authentification middleware
 	service.Use(helper.Auth)
 	{
-		// for user
+		// for user models
 		service.GET("/user", uc.GetUserInfo)
 		service.GET("/users", uc.GetAllUser)
 		service.PUT("/user", uc.UpdateUser)
 		service.PUT("/user/topup", uc.TopUpDeposit)
 
-		// // for workou
-		// service.GET("/workouts", wc.GetAllWorkout)
-		// service.GET("/workouts/:id", wc.GetDetailWorkout)
-		// service.POST("/workouts", wc.CreateWorkout)
-		// service.PUT("/workouts/:id", wc.UpdateWorkout)
-		// service.DELETE("/workouts/:id", wc.DeleteWorkout)
-
-		// // for exercise
-		// service.POST("/exercises", ec.CreateExercise)
-		// service.DELETE("/exercises/:id", ec.DeleteExercise)
-
-		// // for log
-		// service.POST("/logs", lc.CreateLog)
-		// service.GET("/logs", lc.GetLog)
+		// for book models
+		service.GET("/books", bc.ListAllBooks)
+		service.GET("/books/available", bc.ListAvailableBooks)
+		service.GET("/books/rented", bc.ListRentedBook)
+		service.POST("/books", bc.AddNewBook)
+		service.PUT("/books/:id", bc.EditBook)
+		service.DELETE("/books/:id", bc.DeleteBook)
 	}
 }
