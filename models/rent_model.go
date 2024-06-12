@@ -13,11 +13,10 @@ type Rent struct {
 	ReturnedAt time.Time `json:"returned_at"`
 }
 
-
 type RentRequest struct {
-	BookID uint `json:"book_id"`
-	RentAt     string `json:"rent_at"`
-	Days int `json:"days"`
+	BookID uint   `json:"book_id"`
+	RentAt string `json:"rent_at"`
+	Days   int    `json:"days"`
 }
 
 type RentResponse struct {
@@ -29,3 +28,11 @@ type RentResponse struct {
 	Deadline   time.Time `json:"deadline"`
 }
 
+type RentHistory struct {
+	RentID     uint      `json:"rent_id"`
+	BookID     uint      `json:"book_id"`
+	RentAt     time.Time `json:"rent_at" gorm:"not null"`
+	TotalPrice float64   `json:"total_price" gorm:"type:decimal(10,2)"`
+	ReturnedAt time.Time `json:"returned_at"`
+	DaysRented int       `json:"days_rented"`
+}

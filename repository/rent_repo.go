@@ -8,6 +8,7 @@ import (
 
 type RentRepo interface {
 	CreateNewRent(user_id uint, req *models.RentRequest) (models.RentResponse, error)
+	GetRentedBooks(user_id uint) ([]models.RentHistory, error)
 }
 
 func (r *Repo) CreateNewRent(user_id uint, req *models.RentRequest) (models.RentResponse, error) {
@@ -62,4 +63,18 @@ func (r *Repo) CreateNewRent(user_id uint, req *models.RentRequest) (models.Rent
 	helper.CopyNonEmptyFields(rent, &resp)
 
 	return resp, nil
+}
+
+func (r *Repo) GetRentedBooks(user_id uint) ([]models.RentHistory, error) {
+	query := `
+		SELECT r.rent_id, r.book_id, r.total_price, r.rent_at, r.returned_at, DATE_PART('day', r.returned_at::TIMESTAMP - r.rent_at::TIMESTAMP) AS days_rented from users as u
+		join rents as r on r.user_id = u.user_id
+		where u.user_id = ? and r.rent_status = 'returned';`
+	var history []models.RentHistory
+	res := r.DB.Raw(query, user_id).Find(&history)
+	if res.Error != nil {
+		return nil, helper.ErrQuery
+	}
+
+	return history, nil
 }

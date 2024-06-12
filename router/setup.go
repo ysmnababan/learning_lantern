@@ -40,6 +40,7 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 		service.GET("/users", uc.GetAllUser)
 		service.PUT("/user", uc.UpdateUser)
 		service.PUT("/user/topup", uc.TopUpDeposit)
+		service.GET("/user/rented", bc.ListRentedBook)
 
 		// for book models
 		service.GET("/books", bc.ListAllBooks)
@@ -47,18 +48,14 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 		service.POST("/book", bc.AddNewBook)
 		service.PUT("/book/:id", bc.EditBook)
 		service.DELETE("/book/:id", bc.DeleteBook)
-		
+
 		// for user rent models
-		service.POST("/rent",rc.RentBook)
-		service.GET("/rents",rc.MyRentedBooks)
-		service.GET("/rent/:id",rc.DetailRentedBook)
-		service.POST("/rent/return/:id",rc.ReturnBook)
-		
-		
-		
-		
-		// for history 
-		service.GET("/history/rented", bc.ListRentedBook)
-		service.GET("/history/rent",rc.MyRentHistory)
+		service.POST("/rent", rc.RentBook)
+		service.GET("/rents", rc.MyRentedBooks)
+		service.GET("/rent/:id", rc.DetailRentedBook)
+		service.POST("/rent/return/:id", rc.ReturnBook)
+
+		// for history
+		service.GET("/history/rent", rc.MyRentHistory)
 	}
 }
