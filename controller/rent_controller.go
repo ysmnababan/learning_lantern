@@ -54,8 +54,17 @@ func (s *RentController) MyRentHistory(c echo.Context) error {
 }
 
 func (s *RentController) MyRentedBooks(c echo.Context) error {
+	cred := helper.GetCredential(c)
+	if cred.Role != "user" {
+		return helper.ParseError(helper.ErrOnlyUser, c)
+	}
 
-	return nil
+	resp, err := s.RentRepo.GetStillRentingBooks(cred.UserID)
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Book that is still renting", "Books": resp})
 }
 
 func (s *RentController) DetailRentedBook(c echo.Context) error {

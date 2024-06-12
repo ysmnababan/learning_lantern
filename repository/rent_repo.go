@@ -9,6 +9,7 @@ import (
 type RentRepo interface {
 	CreateNewRent(user_id uint, req *models.RentRequest) (models.RentResponse, error)
 	GetRentedBooks(user_id uint) ([]models.RentHistory, error)
+	GetStillRentingBooks(user_id uint) ([]models.RentedResponse, error)
 }
 
 func (r *Repo) CreateNewRent(user_id uint, req *models.RentRequest) (models.RentResponse, error) {
@@ -77,4 +78,20 @@ func (r *Repo) GetRentedBooks(user_id uint) ([]models.RentHistory, error) {
 	}
 
 	return history, nil
+}
+
+func (r *Repo) GetStillRentingBooks(user_id uint) ([]models.RentedResponse, error) {
+	var rentingList []models.Rent
+	res := r.DB.Where("rent_status = 'pending' AND user_id = ?", user_id).Find(&rentingList)
+	if res.Error != nil {
+		return nil, helper.ErrQuery
+	}
+	var responList []models.RentedResponse
+	for _, rent := range rentingList {
+		var resp models.RentedResponse
+		helper.CopyNonEmptyFields(rent, &resp)
+		responList = append(responList, resp)
+	}
+
+	return responList, nil
 }

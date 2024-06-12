@@ -28,6 +28,14 @@ type RentResponse struct {
 	Deadline   time.Time `json:"deadline"`
 }
 
+type RentedResponse struct {
+	RentID     uint      `json:"rent_id" gorm:"primaryKey;autoIncrement"`
+	BookID     uint      `json:"book_id" gorm:"not null"`
+	RentStatus string    `json:"rent_status" gorm:"not null"`
+	RentAt     time.Time `json:"rent_at" gorm:"not null"`
+	Deadline   time.Time `json:"deadline"`
+}
+
 type RentHistory struct {
 	RentID     uint      `json:"rent_id"`
 	BookID     uint      `json:"book_id"`
