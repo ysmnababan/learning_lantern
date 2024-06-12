@@ -22,7 +22,12 @@ func (s *BookController) ListAllBooks(c echo.Context) error {
 }
 
 func (s *BookController) ListAvailableBooks(c echo.Context) error {
-	return nil
+	books, err := s.BookRepo.GetAllAvailableBooks()
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Get All Available Books", "Books": books})
 }
 
 func (s *BookController) ListRentedBook(c echo.Context) error {
