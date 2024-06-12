@@ -44,3 +44,13 @@ type RentHistory struct {
 	ReturnedAt time.Time `json:"returned_at"`
 	DaysRented int       `json:"days_rented"`
 }
+
+type ReturnBook struct {
+	RentID        uint      `json:"rent_id" gorm:"primaryKey;autoIncrement"`
+	BookID        uint      `json:"book_id" gorm:"not null"`
+	TotalPrice    float64   `json:"total_price" gorm:"type:decimal(10,2)"`
+	RentAt        time.Time `json:"rent_at" gorm:"not null"`
+	ReturnedAt    time.Time `json:"returned_at"`
+	DaysRented    int       `json:"days_rented"`
+	PaymentMethod string    `json:"payment_method"`
+}

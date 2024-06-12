@@ -74,13 +74,13 @@ func (s *RentController) DetailRentedBook(c echo.Context) error {
 		return helper.ParseError(helper.ErrOnlyUser, c)
 	}
 
-	// get book id
-	book_id, err := strconv.Atoi(c.Param("id"))
+	// get rent id
+	rent_id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return helper.ParseError(helper.ErrInvalidId, c)
 	}
 
-	resp, err := s.RentRepo.GetStillRentingBookByID(cred.UserID, uint(book_id))
+	resp, err := s.RentRepo.GetStillRentingBookByID(cred.UserID, uint(rent_id))
 	if err != nil {
 		return helper.ParseError(err, c)
 	}
@@ -89,6 +89,34 @@ func (s *RentController) DetailRentedBook(c echo.Context) error {
 }
 
 func (s *RentController) ReturnBook(c echo.Context) error {
+	cred := helper.GetCredential(c)
+	if cred.Role != "user" {
+		return helper.ParseError(helper.ErrOnlyUser, c)
+	}
 
-	return nil
+	// get rent id
+	rent_id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return helper.ParseError(helper.ErrInvalidId, c)
+	}
+
+	// get request data
+	var GetR models.RentPayment
+	err = c.Bind(&GetR)
+	if err != nil {
+		return helper.ParseError(helper.ErrBindJSON, c)
+	}
+
+	//validate payment requirement
+	if GetR.PaymentMethod == "" || !(GetR.PaymentMethod == "cash" || GetR.PaymentMethod == "QRIS") {
+		return helper.ParseError(helper.ErrParam, c)
+	}
+
+	resp, err := s.RentRepo.ReturnBook(cred.UserID, uint(rent_id), &GetR)
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Book that is still renting", "Books": resp})
+
 }
