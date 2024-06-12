@@ -13,6 +13,7 @@ type BookRepo interface {
 	GetAllAvailableBooks() ([]models.BookAvailable, error)
 	CreateBook(b *models.Book) error
 	UpdateBook(book_id uint, b *models.BookRequest) (models.Book, error)
+	DeleteBook(book_id uint) (models.Book, error)
 }
 
 func (r *Repo) GetAllBooks() ([]models.Book, error) {
@@ -119,4 +120,24 @@ func (r *Repo) UpdateBook(book_id uint, b *models.BookRequest) (models.Book, err
 		return models.Book{}, helper.ErrQuery
 	}
 	return *updateBook, nil
+}
+
+func (r *Repo) DeleteBook(book_id uint) (models.Book, error) {
+	isExist, err := r.isBookExist(book_id)
+	if err != nil {
+		return models.Book{}, err
+	}
+
+	if !isExist {
+		return models.Book{}, helper.ErrNoData
+	}
+
+	deleteBook := &models.Book{BookID: book_id}
+	r.DB.First(deleteBook)
+
+	res := r.DB.Delete(&models.Book{}, book_id)
+	if res.Error != nil {
+		return models.Book{}, helper.ErrQuery
+	}
+	return *deleteBook, nil
 }
