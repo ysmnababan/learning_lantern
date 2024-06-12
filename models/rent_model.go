@@ -12,3 +12,20 @@ type Rent struct {
 	Deadline   time.Time `json:"deadline"`
 	ReturnedAt time.Time `json:"returned_at"`
 }
+
+
+type RentRequest struct {
+	BookID uint `json:"book_id"`
+	RentAt     string `json:"rent_at"`
+	Days int `json:"days"`
+}
+
+type RentResponse struct {
+	RentID     uint      `json:"rent_id" gorm:"primaryKey;autoIncrement"`
+	UserID     uint      `json:"user_id" gorm:"not null"`
+	BookID     uint      `json:"book_id" gorm:"not null"`
+	RentStatus string    `json:"rent_status" gorm:"not null"`
+	RentAt     time.Time `json:"rent_at" gorm:"not null"`
+	Deadline   time.Time `json:"deadline"`
+}
+
