@@ -38,3 +38,15 @@ type UserDetail struct {
 	Age          int    `json:"age" gorm:"check:age>0"`
 	PhoneNumber  string `json:"phone_number" gorm:"type:varchar(20)"`
 }
+
+type UserDetailResponse struct {
+	UserID      int     `json:"user_id" gorm:"unique;not null"`
+	Username    string  `json:"username" gorm:"type:varchar(255);not null"`
+	Email       string  `json:"email" gorm:"type:varchar(255);unique;not null"`
+	Deposit     float64 `json:"deposit" gorm:"type:decimal(10,2);check:deposit>=0"`
+	Fname       string  `json:"fname" gorm:"type:varchar(255)"`
+	Lname       string  `json:"lname" gorm:"type:varchar(255)"`
+	Address     string  `json:"address" gorm:"type:text"`
+	Age         int     `json:"age" gorm:"check:age>0"`
+	PhoneNumber string  `json:"phone_number" gorm:"type:varchar(20)"`
+}

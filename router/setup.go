@@ -34,8 +34,8 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 	// authentification middleware
 	service.Use(helper.Auth)
 	{
-		// // for user
-		// service.GET("/users", uc.GetUserInfo)
+		// for user
+		service.GET("/users", uc.GetUserInfo)
 
 		// // for workou
 		// service.GET("/workouts", wc.GetAllWorkout)

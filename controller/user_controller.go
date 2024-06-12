@@ -104,12 +104,11 @@ func (s *UserController) Register(c echo.Context) error {
 // @Failure 404 {object} map[string]interface{}
 // @Failure 500 {object} map[string]interface{}
 // @Router /api/users [get]
-// func (s *UserController) GetUserInfo(c echo.Context) error {
-// 	ctx_id := c.Get("id")
-// 	id := uint(ctx_id.(float64))
-// 	respU, err := s.UserRepo.GetInfo(id)
-// 	if err != nil {
-// 		return helper.ParseError(err, c)
-// 	}
-// 	return c.JSON(http.StatusOK, respU)
-// }
+func (s *UserController) GetUserInfo(c echo.Context) error {
+	cred := helper.GetCredential(c)
+	resp, err := s.UserRepo.GetInfo(cred.UserID)
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+	return c.JSON(http.StatusOK, resp)
+}

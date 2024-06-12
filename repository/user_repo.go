@@ -16,6 +16,7 @@ import (
 type UserRepo interface {
 	Login(u models.User) (string, error)
 	Register(u models.User) (models.UserResponse, error)
+	GetInfo(user_id uint) (models.UserDetailResponse, error)
 }
 
 type Repo struct {
@@ -89,7 +90,7 @@ func (r *Repo) Login(u models.User) (string, error) {
 
 	// update token and login time in db
 	getU.JwtToken = token
-	getU.LastLoginDate = time.Now() //'2023-06-10 12:34:56'
+	getU.LastLoginDate = time.Now().Truncate(time.Second) //'2023-06-10 12:34:56'
 	res := r.DB.Save(&getU)
 	if res.Error != nil {
 		return "", helper.ErrQuery
@@ -117,6 +118,14 @@ func (r *Repo) Register(u models.User) (models.UserResponse, error) {
 		return models.UserResponse{}, helper.ErrQuery
 	}
 
+	// create userdetail in userdetail table using emtpy data
+	var ud models.UserDetail
+	ud.UserID = u.UserID
+	res = r.DB.Create(&ud)
+	if res.Error != nil {
+		return models.UserResponse{}, helper.ErrQuery
+	}
+
 	// return response
 	newU.UserID = u.UserID
 	newU.Email = u.Email
@@ -125,26 +134,30 @@ func (r *Repo) Register(u models.User) (models.UserResponse, error) {
 	return newU, nil
 }
 
-// func (r *Repo) GetInfo(id uint) (models.UserResponseDetail, error) {
-// 	var newU models.UserResponseDetail
-// 	var u models.User
-// 	res := r.DB.First(&u, id)
-// 	if res.Error != nil {
-// 		return models.UserResponseDetail{}, helper.ErrQuery
-// 	}
+func (r *Repo) GetInfo(user_id uint) (models.UserDetailResponse, error) {
+	var respU models.UserDetailResponse
 
-// 	// return response
-// 	newU.UserID = u.UserID
-// 	newU.Email = u.Email
-// 	newU.FullName = u.FullName
-// 	newU.Weight = u.Weight
-// 	newU.Height = u.Height
+	var u models.User
+	res := r.DB.First(&u, user_id)
+	if res.Error != nil {
+		return models.UserDetailResponse{}, helper.ErrQuery
+	}
+	var ud models.UserDetail
+	res = r.DB.Where("user_id=?", user_id).First(&ud)
+	if res.Error != nil {
+		return models.UserDetailResponse{}, helper.ErrQuery
+	}
 
-// 	bmi, err := getBMIIndex(u.Weight, u.Height)
-// 	if err != nil {
-// 		return models.UserResponseDetail{}, err
-// 	}
+	// return response
+	respU.UserID = u.UserID
+	respU.Username = u.Username
+	respU.Email = u.Email
+	respU.Deposit = u.Deposit
+	respU.Fname = ud.Fname
+	respU.Lname = ud.Lname
+	respU.Address = ud.Address
+	respU.Age = ud.Age
+	respU.PhoneNumber = ud.PhoneNumber
 
-// 	newU.BMI = bmi
-// 	return newU, nil
-// }
+	return respU, nil
+}
