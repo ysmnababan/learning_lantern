@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS user_details (
 
 -- Table: books
 CREATE TABLE IF NOT EXISTS books (
-    books_id SERIAL PRIMARY KEY,
+    book_id SERIAL PRIMARY KEY,
     book_name VARCHAR(255) NOT NULL,
     stock INT NOT NULL DEFAULT 0 CHECK(stock>=0),
     rental_cost DECIMAL(10, 2) DEFAULT 0 CHECK(rental_cost>=0),
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS books (
 CREATE TABLE IF NOT EXISTS rents (
     rent_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(user_id) NOT NULL,
-    book_id INT REFERENCES books(books_id) NOT NULL,
+    book_id INT REFERENCES books(book_id) NOT NULL,
     total_price DECIMAL(10, 2),
     rent_status VARCHAR(50) NOT NULL,
     rent_at TIMESTAMP NOT NULL,
