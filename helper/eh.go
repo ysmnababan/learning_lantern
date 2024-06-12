@@ -22,6 +22,7 @@ var (
 	ErrParam         = errors.New("error or missing parameter")
 	ErrCredential    = errors.New("password or email doesn't match")
 	ErrGeneratedPwd  = errors.New("error generating password hash")
+	ErrMustAdmin     = errors.New("unauthorized, admin privilege only")
 )
 
 func ParseError(err error, ctx echo.Context) error {
@@ -63,6 +64,9 @@ func ParseError(err error, ctx echo.Context) error {
 	case errors.Is(err, ErrUserExists):
 		status = http.StatusBadRequest
 		message = "User Already Exists"
+	case errors.Is(err, ErrMustAdmin):
+		status = http.StatusUnauthorized
+		message = "Admin privilege only"
 	case errors.Is(err, ErrNoUpdate):
 		status = http.StatusBadRequest
 		message = "Data is the same"
