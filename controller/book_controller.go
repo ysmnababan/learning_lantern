@@ -33,10 +33,6 @@ func (s *BookController) ListAvailableBooks(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Get All Available Books", "Books": books})
 }
 
-func (s *BookController) ListRentedBook(c echo.Context) error {
-	return nil
-}
-
 func (s *BookController) AddNewBook(c echo.Context) error {
 	cred := helper.GetCredential(c)
 	if cred.Role != "admin" {
@@ -104,4 +100,19 @@ func (s *BookController) DeleteBook(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Book Deleted", "Books": resp})
+}
+
+func (s *BookController) ListOfUnavailableBooks(c echo.Context) error {
+	cred := helper.GetCredential(c)
+	if cred.Role != "user" {
+		return helper.ParseError(helper.ErrMustAdmin, c)
+	}
+
+	books, err := s.BookRepo.GetUnavailableBooks()
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Get All Unavailable Books", "Books": books})
+
 }

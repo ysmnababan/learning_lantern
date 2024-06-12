@@ -40,11 +40,11 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 		service.GET("/users", uc.GetAllUser)
 		service.PUT("/user", uc.UpdateUser)
 		service.PUT("/user/topup", uc.TopUpDeposit)
-		service.GET("/user/rented", bc.ListRentedBook)
 
 		// for book models
 		service.GET("/books", bc.ListAllBooks)
 		service.GET("/books/available", bc.ListAvailableBooks)
+		service.GET("/books/unavailable", bc.ListOfUnavailableBooks)
 		service.POST("/book", bc.AddNewBook)
 		service.PUT("/book/:id", bc.EditBook)
 		service.DELETE("/book/:id", bc.DeleteBook)
@@ -57,5 +57,6 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 
 		// for history
 		service.GET("/history/rent", rc.MyRentHistory)
+		// service.GET("/history/revenue", rc.)
 	}
 }

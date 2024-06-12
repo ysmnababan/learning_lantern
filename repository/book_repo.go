@@ -14,6 +14,7 @@ type BookRepo interface {
 	CreateBook(b *models.Book) error
 	UpdateBook(book_id uint, b *models.BookRequest) (models.Book, error)
 	DeleteBook(book_id uint) (models.Book, error)
+	GetUnavailableBooks() ([]models.BookUnavailable, error)
 }
 
 func (r *Repo) GetAllBooks() ([]models.Book, error) {
@@ -159,4 +160,21 @@ func (r *Repo) DeleteBook(book_id uint) (models.Book, error) {
 		return models.Book{}, helper.ErrQuery
 	}
 	return *deleteBook, nil
+}
+
+func (r *Repo) GetUnavailableBooks() ([]models.BookUnavailable, error) {
+	// select b.book_id, b.book_name, r.rent_at, r.deadline, u.username as rented_by from rents as r
+	// join books as b on b.book_id = r.book_id
+	// join users as u on u.user_id = r.user_id
+	// WHERE r.rent_status = 'pending' AND b.stock =0;
+	var bUnvail []models.BookUnavailable
+	res := r.DB.Model(&models.Rent{}).Select("b.book_id", "b.book_name", "rents.rent_at", "rents.deadline", "u.username as rent_by").
+		Joins("LEFT JOIN books as b ON b.book_id = rents.book_id").
+		Joins("LEFT JOIN users as u on u.user_id = rents.user_id").
+		Where("rents.rent_status = ? AND b.stock = ?", "pending", 0).Find(&bUnvail)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return bUnvail, nil
 }

@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Book struct {
 	BookID      uint    `json:"book_id" gorm:"primaryKey;autoIncrement"`
 	BookName    string  `json:"book_name" gorm:"type:varchar(255);not null"`
@@ -29,4 +31,12 @@ type BookAvailable struct {
 	Description string  `json:"description" gorm:"type:text"`
 	Author      string  `json:"author" gorm:"type:varchar(255);not null"`
 	Publisher   string  `json:"publisher" gorm:"type:varchar(255)"`
+}
+
+type BookUnavailable struct {
+	BookID     uint      `json:"book_id" gorm:"primaryKey;autoIncrement"`
+	BookName   string    `json:"book_name" gorm:"type:varchar(255);not null"`
+	RentAt     time.Time `json:"rent_at" gorm:"not null"`
+	Deadline time.Time `json:"deadline"`
+	RentBy     string    `json:"rent_by"`
 }
