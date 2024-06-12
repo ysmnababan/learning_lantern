@@ -14,9 +14,6 @@ var (
 	ErrScan          = errors.New("row scanning failed")
 	ErrInvalidId     = errors.New("invalid id")
 	ErrUserExists    = errors.New("user already exist")
-	ErrRowsAffected  = errors.New("unable to get affected row")
-	ErrNoAffectedRow = errors.New("rows affected is 0")
-	ErrLastInsertId  = errors.New("unable to get last insert id")
 	ErrNoUpdate      = errors.New("data already exists")
 	ErrBindJSON      = errors.New("unable to bind json")
 	ErrParam         = errors.New("error or missing parameter")
@@ -24,6 +21,7 @@ var (
 	ErrGeneratedPwd  = errors.New("error generating password hash")
 	ErrMustAdmin     = errors.New("unauthorized, admin privilege only")
 	ErrOnlyUser      = errors.New("unauthorized, user privilege only")
+	ErrAuthorBookUQ  = errors.New("book and author must unique combination")
 )
 
 func ParseError(err error, ctx echo.Context) error {
@@ -37,13 +35,6 @@ func ParseError(err error, ctx echo.Context) error {
 		fallthrough
 	case errors.Is(err, ErrScan):
 		fallthrough
-	case errors.Is(err, ErrRowsAffected):
-		fallthrough
-	case errors.Is(err, ErrLastInsertId):
-		fallthrough
-	case errors.Is(err, ErrNoAffectedRow):
-		status = http.StatusInternalServerError
-		message = "Internal Server Error"
 	case errors.Is(err, ErrNoUser):
 		status = http.StatusNotFound
 		message = "No User found"
@@ -59,6 +50,9 @@ func ParseError(err error, ctx echo.Context) error {
 	case errors.Is(err, ErrInvalidId):
 		status = http.StatusBadRequest
 		message = "Invalid ID"
+	case errors.Is(err, ErrAuthorBookUQ):
+		status = http.StatusBadRequest
+		message = "author and book name must be unique"
 	case errors.Is(err, ErrCredential):
 		status = http.StatusBadRequest
 		message = "email or password missmatch"
