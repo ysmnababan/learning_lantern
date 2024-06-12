@@ -11,6 +11,16 @@ type Book struct {
 	Publisher   string  `json:"publisher" gorm:"type:varchar(255)"`
 }
 
+type BookRequest struct {
+	BookName    string  `json:"book_name"`
+	Stock       int     `json:"stock"`
+	RentalCost  float64 `json:"rental_cost"`
+	Category    string  `json:"category"`
+	Description string  `json:"description"`
+	Author      string  `json:"author"`
+	Publisher   string  `json:"publisher"`
+}
+
 type BookAvailable struct {
 	BookID      uint    `json:"book_id" gorm:"primaryKey;autoIncrement"`
 	BookName    string  `json:"book_name" gorm:"type:varchar(255);not null"`
