@@ -25,6 +25,7 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 	uc := &controller.UserController{UserRepo: repo}
 	bc := &controller.BookController{BookRepo: repo}
 	rc := &controller.RentController{RentRepo: repo}
+	rp := &controller.PaymentController{PaymentRepo: repo}
 
 	// no need authorization
 	e.POST("/api/users/register", uc.Register)
@@ -57,6 +58,6 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 
 		// for history
 		service.GET("/history/rent", rc.MyRentHistory)
-		// service.GET("/history/revenue", rc.)
+		service.GET("/history/revenue", rp.GetTotalRevenue)
 	}
 }
