@@ -1,7 +1,7 @@
 package models
 
 type Book struct {
-	BookID      uint    `json:"book_id" gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	BookID      uint    `json:"book_id" gorm:"primaryKey;autoIncrement"`
 	BookName    string  `json:"book_name" gorm:"type:varchar(255);not null"`
 	Stock       int     `json:"stock" gorm:"type:int;not null;default:0;check:stock>=0"`
 	RentalCost  float64 `json:"rental_cost" gorm:"type:decimal(10,2);default:0;check:rental_cost>=0"`
