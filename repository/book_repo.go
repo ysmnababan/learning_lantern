@@ -93,6 +93,25 @@ func (r *Repo) isBookExist(book_id uint) (bool, error) {
 
 }
 
+func (r *Repo) isStockReady(book_id uint) (bool, error) {
+	book := models.Book{BookID: book_id}
+
+	//search the book
+	res := r.DB.Where("stock > 0").First(&book)
+	// book exist
+	if res.Error == nil {
+		return true, nil
+	}
+
+	// error query
+	if res.Error != gorm.ErrRecordNotFound {
+		return false, helper.ErrQuery
+	}
+
+	return false, nil
+
+}
+
 func (r *Repo) UpdateBook(book_id uint, b *models.BookRequest) (models.Book, error) {
 	isExist, err := r.isBookExist(book_id)
 	if err != nil {
