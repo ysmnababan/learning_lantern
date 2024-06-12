@@ -1,0 +1,398 @@
+{
+	"info": {
+		"_postman_id": "343ebbd3-f845-499c-8dc4-d29e601d6dfc",
+		"name": "learning_lantern localhost API collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35075337"
+	},
+	"item": [
+		{
+			"name": "[USER] register user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"yoland\",\r\n    \"email\": \"yoland\",\r\n    \"password\": \"admin\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/users/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[USER] login user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"yoland\",\r\n    \"password\": \"admin\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/users/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[USER] get detail of a user (user,admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[USER] get all user (admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[USER] update detail of a user (user,admin)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"meowmeow\",\r\n    \"fname\": \"Yoland\",\r\n    \"lname\": \"Nababan\",\r\n    \"address\": \"123 Main St\",\r\n    \"age\": 27,\r\n    \"phone_number\": \"123-456-7890\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[USER] top up money (admin,user)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deposit\":2\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/user/topup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"topup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] get all books (user,admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] get all available books (user,admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/books/available",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"books",
+						"available"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] Add new book (admin)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"book_name\": \"Go Programminggu\",\r\n    \"stock\": 10,\r\n    \"rental_cost\": 15.50,\r\n    \"category\": \"Programming\",\r\n    \"description\": \"A comprehensive guide to Go programming.\",\r\n    \"author\": \"Prof Yoland\",\r\n    \"publisher\": \"Tech Books\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/book",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] Update book (admin)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"book_name\": \"\",\r\n    \"description\": \"A comprehensive guide to Go programming for advanced user.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/book/13",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book",
+						"13"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] Delete book (admin)",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/book/13",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"book",
+						"13"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
