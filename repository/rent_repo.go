@@ -4,12 +4,15 @@ import (
 	"learning_lantern/helper"
 	"learning_lantern/models"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type RentRepo interface {
 	CreateNewRent(user_id uint, req *models.RentRequest) (models.RentResponse, error)
 	GetRentedBooks(user_id uint) ([]models.RentHistory, error)
 	GetStillRentingBooks(user_id uint) ([]models.RentedResponse, error)
+	GetStillRentingBookByID(user_id uint, book_id uint) (models.RentedResponse, error)
 }
 
 func (r *Repo) CreateNewRent(user_id uint, req *models.RentRequest) (models.RentResponse, error) {
@@ -94,4 +97,29 @@ func (r *Repo) GetStillRentingBooks(user_id uint) ([]models.RentedResponse, erro
 	}
 
 	return responList, nil
+}
+
+func (r *Repo) GetStillRentingBookByID(user_id uint, book_id uint) (models.RentedResponse, error) {
+	isExist, err := r.isBookExist(book_id)
+	if err != nil {
+		return models.RentedResponse{}, err
+	}
+
+	if !isExist {
+		return models.RentedResponse{}, helper.ErrNoData
+	}
+
+	var rent models.Rent
+	res := r.DB.Where("rent_status = 'pending' AND user_id = ? AND book_id = ?", user_id, book_id).First(&rent)
+	if res.Error != nil {
+		if res.Error == gorm.ErrRecordNotFound {
+			return models.RentedResponse{}, helper.ErrNoData
+		}
+		return models.RentedResponse{}, helper.ErrQuery
+	}
+
+	var resp models.RentedResponse
+	helper.CopyNonEmptyFields(rent, &resp)
+
+	return resp, nil
 }

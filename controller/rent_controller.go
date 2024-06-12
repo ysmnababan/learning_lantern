@@ -5,6 +5,7 @@ import (
 	"learning_lantern/models"
 	"learning_lantern/repository"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -68,8 +69,23 @@ func (s *RentController) MyRentedBooks(c echo.Context) error {
 }
 
 func (s *RentController) DetailRentedBook(c echo.Context) error {
+	cred := helper.GetCredential(c)
+	if cred.Role != "user" {
+		return helper.ParseError(helper.ErrOnlyUser, c)
+	}
 
-	return nil
+	// get book id
+	book_id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return helper.ParseError(helper.ErrInvalidId, c)
+	}
+
+	resp, err := s.RentRepo.GetStillRentingBookByID(cred.UserID, uint(book_id))
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Book that is still renting", "Books": resp})
 }
 
 func (s *RentController) ReturnBook(c echo.Context) error {
