@@ -17,6 +17,7 @@ type UserRepo interface {
 	Login(u models.User) (string, error)
 	Register(u models.User) (models.UserResponse, error)
 	GetInfo(user_id uint) (models.UserDetailResponse, error)
+	GetAllUser(user_id uint) ([]models.UserDetailResponse, error)
 }
 
 type Repo struct {
@@ -160,4 +161,22 @@ func (r *Repo) GetInfo(user_id uint) (models.UserDetailResponse, error) {
 	respU.PhoneNumber = ud.PhoneNumber
 
 	return respU, nil
+}
+
+func (r *Repo) GetAllUser(user_id uint) ([]models.UserDetailResponse, error) {
+	var users []models.User
+	res := r.DB.Where("role = ?", "user").Find(&users)
+	if res.Error != nil {
+		return nil, helper.ErrQuery
+	}
+	var alluser []models.UserDetailResponse
+	for _, user := range users {
+		u, err := r.GetInfo(uint(user.UserID))
+		if err != nil {
+			return nil, err
+		}
+		alluser = append(alluser, u)
+	}
+
+	return alluser, nil
 }

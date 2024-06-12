@@ -3,7 +3,7 @@ package models
 import "time"
 
 type User struct {
-	UserID        int       `json:"user_id" gorm:"primaryKey;autoIncrement"`
+	UserID        uint      `json:"user_id" gorm:"primaryKey;autoIncrement"`
 	Username      string    `json:"username" gorm:"type:varchar(255);not null"`
 	Email         string    `json:"email" gorm:"type:varchar(255);unique;not null"`
 	Password      string    `json:"password" gorm:"type:varchar(255);not null"`
@@ -14,14 +14,14 @@ type User struct {
 }
 
 type UserResponse struct {
-	UserID   int     `json:"user_id" gorm:"primaryKey;autoIncrement"`
+	UserID   uint    `json:"user_id" gorm:"primaryKey;autoIncrement"`
 	Username string  `json:"username" gorm:"type:varchar(255);not null"`
 	Email    string  `json:"email" gorm:"type:varchar(255);unique;not null"`
 	Deposit  float64 `json:"deposit" gorm:"type:decimal(10,2);check:deposit>=0"`
 }
 
 type UserLoginResponse struct {
-	UserID        int       `json:"user_id" gorm:"primaryKey;autoIncrement"`
+	UserID        uint      `json:"user_id" gorm:"primaryKey;autoIncrement"`
 	Username      string    `json:"username" gorm:"type:varchar(255);not null"`
 	Email         string    `json:"email" gorm:"type:varchar(255);unique;not null"`
 	Deposit       float64   `json:"deposit" gorm:"type:decimal(10,2);check:deposit>=0"`
@@ -30,8 +30,8 @@ type UserLoginResponse struct {
 }
 
 type UserDetail struct {
-	UserDetailID int    `json:"user_detail_id" gorm:"primaryKey;autoIncrement"`
-	UserID       int    `json:"user_id" gorm:"unique;not null"`
+	UserDetailID uint   `json:"user_detail_id" gorm:"primaryKey;autoIncrement"`
+	UserID       uint   `json:"user_id" gorm:"unique;not null"`
 	Fname        string `json:"fname" gorm:"type:varchar(255)"`
 	Lname        string `json:"lname" gorm:"type:varchar(255)"`
 	Address      string `json:"address" gorm:"type:text"`
@@ -40,7 +40,7 @@ type UserDetail struct {
 }
 
 type UserDetailResponse struct {
-	UserID      int     `json:"user_id" gorm:"unique;not null"`
+	UserID      uint    `json:"user_id" gorm:"unique;not null"`
 	Username    string  `json:"username" gorm:"type:varchar(255);not null"`
 	Email       string  `json:"email" gorm:"type:varchar(255);unique;not null"`
 	Deposit     float64 `json:"deposit" gorm:"type:decimal(10,2);check:deposit>=0"`
@@ -49,4 +49,13 @@ type UserDetailResponse struct {
 	Address     string  `json:"address" gorm:"type:text"`
 	Age         int     `json:"age" gorm:"check:age>0"`
 	PhoneNumber string  `json:"phone_number" gorm:"type:varchar(20)"`
+}
+
+type UserUpdateRequest struct {
+	Username    string `json:"username"`
+	Fname       string `json:"fname"`
+	Lname       string `json:"lname" `
+	Address     string `json:"address"`
+	Age         int    `json:"age"`
+	PhoneNumber string `json:"phone_number"`
 }

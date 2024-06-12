@@ -35,7 +35,8 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 	service.Use(helper.Auth)
 	{
 		// for user
-		service.GET("/users", uc.GetUserInfo)
+		service.GET("/user", uc.GetUserInfo)
+		service.GET("/users", uc.GetAllUser)
 
 		// // for workou
 		// service.GET("/workouts", wc.GetAllWorkout)

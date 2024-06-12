@@ -110,5 +110,38 @@ func (s *UserController) GetUserInfo(c echo.Context) error {
 	if err != nil {
 		return helper.ParseError(err, c)
 	}
-	return c.JSON(http.StatusOK, resp)
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Get User Info", "User": resp})
+}
+
+func (s *UserController) GetAllUser(c echo.Context) error {
+	cred := helper.GetCredential(c)
+	if cred.Role != "admin" {
+		return helper.ParseError(helper.ErrMustAdmin, c)
+	}
+
+	resp, err := s.UserRepo.GetAllUser(cred.UserID)
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Get All User", "User": resp})
+}
+
+func (s *UserController) UpdateUser(c echo.Context) error {
+	var GetU models.UserUpdateRequest
+	err := c.Bind(&GetU)
+	if err != nil {
+		return helper.ParseError(helper.ErrBindJSON, c)
+	}
+
+	//validate user
+	if GetU.Username == "" {
+		return helper.ParseError(helper.ErrParam, c)
+	}
+
+	respU, err := s.UserRepo.UpdateUser(GetU)
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "User Data Updated", "User": respU})
 }
