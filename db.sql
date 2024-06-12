@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS books (
     description TEXT,
     author VARCHAR(255) NOT NULL,
     publisher VARCHAR(255),
-    CONSTRAINT unique_book_publisher UNIQUE (book_name, publisher)
+    CONSTRAINT unique_book_author UNIQUE (book_name, author)
 );
 
 -- Table: Rents
