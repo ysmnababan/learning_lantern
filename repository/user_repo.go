@@ -82,8 +82,20 @@ func (r *Repo) Login(u models.User) (string, error) {
 	}
 
 	// generate token
-	return generateToken(getU)
+	token, err := generateToken(getU)
+	if err != nil {
+		return "", err
+	}
 
+	// update token and login time in db
+	getU.JwtToken = token
+	getU.LastLoginDate = time.Now() //'2023-06-10 12:34:56'
+	res := r.DB.Save(&getU)
+	if res.Error != nil {
+		return "", helper.ErrQuery
+	}
+
+	return token, nil
 }
 
 func (r *Repo) Register(u models.User) (models.UserResponse, error) {
@@ -108,10 +120,8 @@ func (r *Repo) Register(u models.User) (models.UserResponse, error) {
 	// return response
 	newU.UserID = u.UserID
 	newU.Email = u.Email
-	// newU.FullName = u.FullName
-	// newU.Weight = u.Weight
-	// newU.Height = u.Height
-
+	newU.Username = u.Username
+	newU.Deposit = u.Deposit
 	return newU, nil
 }
 

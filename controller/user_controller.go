@@ -45,7 +45,7 @@ func (s *UserController) Login(c echo.Context) error {
 	return c.JSON(
 		http.StatusOK,
 		map[string]interface{}{
-			"message": "login success",
+			"message": "Login success",
 			"token":   tokenString,
 		})
 }
@@ -70,9 +70,18 @@ func (s *UserController) Register(c echo.Context) error {
 	}
 
 	//validate user
-	// if GetU.Email == "" || GetU.FullName == "" || GetU.Password == "" || GetU.Weight <= 0 || GetU.Height <= 0 {
-	if GetU.Email == "" {
+
+	if GetU.Email == "" || GetU.Password == "" || GetU.Username == "" {
 		return helper.ParseError(helper.ErrParam, c)
+	}
+
+	// validate role
+	if GetU.Role == "" {
+		GetU.Role = "user"
+	} else {
+		if GetU.Role != "user" && GetU.Role != "admin" {
+			return helper.ParseError(helper.ErrParam, c)
+		}
 	}
 
 	respU, err := s.UserRepo.Register(GetU)

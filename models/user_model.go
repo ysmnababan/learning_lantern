@@ -14,6 +14,13 @@ type User struct {
 }
 
 type UserResponse struct {
+	UserID   int     `json:"user_id" gorm:"primaryKey;autoIncrement"`
+	Username string  `json:"username" gorm:"type:varchar(255);not null"`
+	Email    string  `json:"email" gorm:"type:varchar(255);unique;not null"`
+	Deposit  float64 `json:"deposit" gorm:"type:decimal(10,2);check:deposit>=0"`
+}
+
+type UserLoginResponse struct {
 	UserID        int       `json:"user_id" gorm:"primaryKey;autoIncrement"`
 	Username      string    `json:"username" gorm:"type:varchar(255);not null"`
 	Email         string    `json:"email" gorm:"type:varchar(255);unique;not null"`
