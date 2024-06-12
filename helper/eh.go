@@ -23,6 +23,7 @@ var (
 	ErrCredential    = errors.New("password or email doesn't match")
 	ErrGeneratedPwd  = errors.New("error generating password hash")
 	ErrMustAdmin     = errors.New("unauthorized, admin privilege only")
+	ErrOnlyUser      = errors.New("unauthorized, user privilege only")
 )
 
 func ParseError(err error, ctx echo.Context) error {
@@ -67,6 +68,9 @@ func ParseError(err error, ctx echo.Context) error {
 	case errors.Is(err, ErrMustAdmin):
 		status = http.StatusUnauthorized
 		message = "Admin privilege only"
+	case errors.Is(err, ErrOnlyUser):
+		status = http.StatusUnauthorized
+		message = "User privilege only"
 	case errors.Is(err, ErrNoUpdate):
 		status = http.StatusBadRequest
 		message = "Data is the same"
