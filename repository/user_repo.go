@@ -19,6 +19,7 @@ type UserRepo interface {
 	GetInfo(user_id uint) (models.UserDetailResponse, error)
 	GetAllUser(user_id uint) ([]models.UserDetailResponse, error)
 	Update(user_id uint, u models.UserUpdateRequest) (models.UserDetailResponse, error)
+	TopUp(user_id uint, amount float64) (float64, error)
 }
 
 type Repo struct {
@@ -213,4 +214,20 @@ func (r *Repo) Update(user_id uint, u models.UserUpdateRequest) (models.UserDeta
 	}
 
 	return r.GetInfo(user_id)
+}
+
+func (r *Repo) TopUp(user_id uint, amount float64) (float64, error) {
+	var user models.User
+	res := r.DB.First(&user, user_id)
+	if res.Error != nil {
+		return 0, helper.ErrQuery
+	}
+
+	// update user deposit
+	user.Deposit = user.Deposit + amount
+	res = r.DB.Save(&user)
+	if res.Error != nil {
+		return 0, helper.ErrQuery
+	}
+	return user.Deposit, nil
 }

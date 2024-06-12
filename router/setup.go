@@ -6,6 +6,7 @@ import (
 	"learning_lantern/repository"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 )
 
@@ -17,6 +18,7 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 			return next(c)
 		}
 	})
+	e.Use(middleware.Recover())
 
 	repo := &repository.Repo{DB: db}
 
@@ -38,6 +40,7 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 		service.GET("/user", uc.GetUserInfo)
 		service.GET("/users", uc.GetAllUser)
 		service.PUT("/user", uc.UpdateUser)
+		service.PUT("/user/topup", uc.TopUpDeposit)
 
 		// // for workou
 		// service.GET("/workouts", wc.GetAllWorkout)

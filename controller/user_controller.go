@@ -146,3 +146,27 @@ func (s *UserController) UpdateUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "User Data Updated", "User": respU})
 }
+
+func (s *UserController) TopUpDeposit(c echo.Context) error {
+	cred := helper.GetCredential(c)
+	if cred.Role != "user" {
+		return helper.ParseError(helper.ErrOnlyUser, c)
+	}
+	var GetD models.TopUpReq
+	err := c.Bind(&GetD)
+	if err != nil {
+		return helper.ParseError(helper.ErrBindJSON, c)
+	}
+
+	//validate deposit
+	if GetD.Deposit <= 0 {
+		return helper.ParseError(helper.ErrParam, c)
+	}
+
+	respU, err := s.UserRepo.TopUp(cred.UserID, GetD.Deposit)
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Top Up success", "Amount of Deposit": respU})
+}

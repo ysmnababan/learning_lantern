@@ -59,3 +59,7 @@ type UserUpdateRequest struct {
 	Age         int    `json:"age"`
 	PhoneNumber string `json:"phone_number"`
 }
+
+type TopUpReq struct {
+	Deposit float64 `json:"deposit"`
+}
