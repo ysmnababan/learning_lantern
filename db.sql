@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS rents (
 -- Table: Payments
 CREATE TABLE IF NOT EXISTS Payments (
     payment_id SERIAL PRIMARY KEY,
-    rent_id INT REFERENCES rents(rent_id) NOT NULL,
+    rent_id INT REFERENCES rents(rent_id) NOT NULL UNIQUE,
     payment_date TIMESTAMP NOT NULL,
     payment_amount DECIMAL(10, 2) NOT NULL,
     payment_method VARCHAR(50) NOT NULL
