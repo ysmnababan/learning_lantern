@@ -8,21 +8,22 @@ import (
 )
 
 var (
-	ErrNoData       = errors.New("no data in result set")
-	ErrNoUser       = errors.New("no user exist")
-	ErrQuery        = errors.New("query execution failed")
-	ErrScan         = errors.New("row scanning failed")
-	ErrInvalidId    = errors.New("invalid id")
-	ErrUserExists   = errors.New("user already exist")
-	ErrNoUpdate     = errors.New("data already exists")
-	ErrBindJSON     = errors.New("unable to bind json")
-	ErrParam        = errors.New("error or missing parameter")
-	ErrCredential   = errors.New("password or email doesn't match")
-	ErrGeneratedPwd = errors.New("error generating password hash")
-	ErrMustAdmin    = errors.New("unauthorized, admin privilege only")
-	ErrOnlyUser     = errors.New("unauthorized, user privilege only")
-	ErrAuthorBookUQ = errors.New("book and author must unique combination")
-	ErrNoStock      = errors.New("No stock left")
+	ErrNoData              = errors.New("no data in result set")
+	ErrNoUser              = errors.New("no user exist")
+	ErrQuery               = errors.New("query execution failed")
+	ErrScan                = errors.New("row scanning failed")
+	ErrInvalidId           = errors.New("invalid id")
+	ErrUserExists          = errors.New("user already exist")
+	ErrNoUpdate            = errors.New("data already exists")
+	ErrBindJSON            = errors.New("unable to bind json")
+	ErrParam               = errors.New("error or missing parameter")
+	ErrCredential          = errors.New("password or email doesn't match")
+	ErrGeneratedPwd        = errors.New("error generating password hash")
+	ErrMustAdmin           = errors.New("unauthorized, admin privilege only")
+	ErrOnlyUser            = errors.New("unauthorized, user privilege only")
+	ErrAuthorBookUQ        = errors.New("book and author must unique combination")
+	ErrNoStock             = errors.New("no stock left")
+	ErrUnsufficientBalance = errors.New("no sufficient fund")
 )
 
 func ParseError(err error, ctx echo.Context) error {
@@ -42,6 +43,9 @@ func ParseError(err error, ctx echo.Context) error {
 	case errors.Is(err, ErrNoData):
 		status = http.StatusNotFound
 		message = "No data found"
+	case errors.Is(err, ErrUnsufficientBalance):
+		status = http.StatusBadRequest
+		message = "unsufficient balance"
 	case errors.Is(err, ErrParam):
 		status = http.StatusBadRequest
 		message = "error or missing param"
