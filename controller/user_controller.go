@@ -127,6 +127,7 @@ func (s *UserController) GetAllUser(c echo.Context) error {
 }
 
 func (s *UserController) UpdateUser(c echo.Context) error {
+	cred := helper.GetCredential(c)
 	var GetU models.UserUpdateRequest
 	err := c.Bind(&GetU)
 	if err != nil {
@@ -138,7 +139,7 @@ func (s *UserController) UpdateUser(c echo.Context) error {
 		return helper.ParseError(helper.ErrParam, c)
 	}
 
-	respU, err := s.UserRepo.UpdateUser(GetU)
+	respU, err := s.UserRepo.Update(cred.UserID, GetU)
 	if err != nil {
 		return helper.ParseError(err, c)
 	}

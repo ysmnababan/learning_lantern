@@ -18,6 +18,7 @@ type UserRepo interface {
 	Register(u models.User) (models.UserResponse, error)
 	GetInfo(user_id uint) (models.UserDetailResponse, error)
 	GetAllUser(user_id uint) ([]models.UserDetailResponse, error)
+	Update(user_id uint, u models.UserUpdateRequest) (models.UserDetailResponse, error)
 }
 
 type Repo struct {
@@ -179,4 +180,37 @@ func (r *Repo) GetAllUser(user_id uint) ([]models.UserDetailResponse, error) {
 	}
 
 	return alluser, nil
+}
+
+func (r *Repo) Update(user_id uint, u models.UserUpdateRequest) (models.UserDetailResponse, error) {
+	var user models.User
+	res := r.DB.First(&user, user_id)
+	if res.Error != nil {
+		return models.UserDetailResponse{}, helper.ErrQuery
+	}
+
+	// update username
+	user.Username = u.Username
+	res = r.DB.Save(&user)
+	if res.Error != nil {
+		return models.UserDetailResponse{}, helper.ErrQuery
+	}
+
+	// update detail of user
+	var updateU models.UserDetail
+	res = r.DB.Where("user_id=?", user_id).First(&updateU)
+	if res.Error != nil {
+		return models.UserDetailResponse{}, helper.ErrQuery
+	}
+	updateU.Fname = u.Fname
+	updateU.Lname = u.Lname
+	updateU.Address = u.Address
+	updateU.Age = u.Age
+	updateU.PhoneNumber = u.PhoneNumber
+	res = r.DB.Save(&updateU)
+	if res.Error != nil {
+		return models.UserDetailResponse{}, helper.ErrQuery
+	}
+
+	return r.GetInfo(user_id)
 }
