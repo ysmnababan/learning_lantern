@@ -1,0 +1,790 @@
+{
+	"info": {
+		"_postman_id": "f5c5564a-22df-48f1-8919-72cde2e3182d",
+		"name": "learning_lantern (deployment)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35075337"
+	},
+	"item": [
+		{
+			"name": "[USER] register user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"yoland\",\r\n    \"email\": \"yoland_deploy\",\r\n    \"password\": \"admin\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/users/register",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[USER] login user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"bob@example.com\",\r\n    \"password\": \"admin\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/users/login",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[USER] get detail of a user (user,admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJvYkBleGFtcGxlLmNvbSIsImV4cCI6MTcxODM4MTM3NCwiaWQiOjQsInJvbGUiOiJ1c2VyIn0.UCoN_HW5BGXpOjQEsqPQ0ix1DtSooobfdyEQ8GK3kd8",
+						"description": "bob",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/user",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[USER] get all user (admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/users",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[USER] update detail of a user (user,admin)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"meowmeow\",\r\n    \"fname\": \"Yoland\",\r\n    \"lname\": \"Nababan\",\r\n    \"address\": \"123 Main St\",\r\n    \"age\": 27,\r\n    \"phone_number\": \"123-456-7890\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/user",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[USER] top up money (admin,user)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deposit\":108.5\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/user/topup",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"user",
+						"topup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] get all books (user,admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/books",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] get all available books (user,admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/books/available",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"books",
+						"available"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] get all unavailable books (user)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/books/unavailable",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"books",
+						"unavailable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] Add new book (admin)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"book_name\": \"Go Programminggu\",\r\n    \"stock\": 10,\r\n    \"rental_cost\": 15.50,\r\n    \"category\": \"Programming\",\r\n    \"description\": \"A comprehensive guide to Go programming.\",\r\n    \"author\": \"Prof Yoland\",\r\n    \"publisher\": \"Tech Books\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/book",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] Update book (admin)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stock\":1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/book/12",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"book",
+						"12"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[BOOK] Delete book (admin)",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/book/13",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"book",
+						"13"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[RENT] Rent a book (user)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFsaWNlQGV4YW1wbGUuY29tIiwiZXhwIjoxNzE4MzgxMjU5LCJpZCI6Mywicm9sZSI6InVzZXIifQ.lpHkbu9OjhG-cAa3LJswdqmZwAt1OWXgPfTb8XEc4j0",
+						"description": "alice",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJvYkBleGFtcGxlLmNvbSIsImV4cCI6MTcxODM4MTM3NCwiaWQiOjQsInJvbGUiOiJ1c2VyIn0.UCoN_HW5BGXpOjQEsqPQ0ix1DtSooobfdyEQ8GK3kd8",
+						"description": "bob",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"book_id\":5,\r\n    \"rent_at\": \"\",\r\n    \"days\":1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/rent",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"rent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[RENT] list of book that are still renting (user)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJvYkBleGFtcGxlLmNvbSIsImV4cCI6MTcxODM4MTM3NCwiaWQiOjQsInJvbGUiOiJ1c2VyIn0.UCoN_HW5BGXpOjQEsqPQ0ix1DtSooobfdyEQ8GK3kd8",
+						"description": "bob",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/rents",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"rents"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[RENT] get a book that are still renting (user)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/rent/10",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"rent",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[RENT] return book using VA payment (user)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJvYkBleGFtcGxlLmNvbSIsImV4cCI6MTcxODM4MTM3NCwiaWQiOjQsInJvbGUiOiJ1c2VyIn0.UCoN_HW5BGXpOjQEsqPQ0ix1DtSooobfdyEQ8GK3kd8",
+						"description": "bob",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"payment_method\":\"VA\",\r\n    \"bank_code\":\"BRI\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/rent/return_va/5",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"rent",
+						"return_va",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[RENT] return book using cash payment (user)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJvYkBleGFtcGxlLmNvbSIsImV4cCI6MTcxODM4MTM3NCwiaWQiOjQsInJvbGUiOiJ1c2VyIn0.UCoN_HW5BGXpOjQEsqPQ0ix1DtSooobfdyEQ8GK3kd8",
+						"description": "bob",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/rent/return_cash/18",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"rent",
+						"return_cash",
+						"18"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[HISTORY] list of all returned book (user)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/history/rent",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"history",
+						"rent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[HISTORY] get total revenue (admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://thawing-tor-78922-34d29536655f.herokuapp.com/api/history/revenue",
+					"protocol": "https",
+					"host": [
+						"thawing-tor-78922-34d29536655f",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"history",
+						"revenue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "va api",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiZXhwIjoxNzE4MzQxODQ1LCJpZCI6MTEsInJvbGUiOiJhZG1pbiJ9.xB3rTIArt8YrYIu5c46UMNzB96cSDMozy-xP_3gCN5Y",
+						"description": "admin",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbGFuZCIsImV4cCI6MTcxODM0NDQzMSwiaWQiOjEyLCJyb2xlIjoidXNlciJ9.PB7oSBd6n2az2Ro0wuRjXJa3oLnoMptLbYBYYSM2wNQ",
+						"description": "yoland"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/tesva",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tesva"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "exchange rate api",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://v6.exchangerate-api.com/v6/3d954472bc85adbafad0a4f9/latest/USD",
+					"protocol": "https",
+					"host": [
+						"v6",
+						"exchangerate-api",
+						"com"
+					],
+					"path": [
+						"v6",
+						"3d954472bc85adbafad0a4f9",
+						"latest",
+						"USD"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

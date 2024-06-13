@@ -444,6 +444,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/history/revenue": {
+            "get": {
+                "description": "Get total revenue from all returned books",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "History"
+                ],
+                "summary": "Get total revenue [ONLY FOR ADMIN]",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "",
+                        "description": "Authentication token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message : string, Revenue(USD): float64",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/api/rent": {
             "post": {
                 "description": "Rent a book in a library, 1-30 days",
@@ -1408,7 +1463,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "thawing-tor-78922-34d29536655f.herokuapp.com",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Swagger Example API",

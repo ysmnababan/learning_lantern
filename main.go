@@ -25,8 +25,8 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host localhost:8080
 // @BasePath /
+// @host thawing-tor-78922-34d29536655f.herokuapp.com
 func main() {
 	db := config.Connect()
 

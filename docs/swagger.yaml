@@ -193,7 +193,7 @@ definitions:
       username:
         type: string
     type: object
-host: localhost:8080
+host: thawing-tor-78922-34d29536655f.herokuapp.com
 info:
   contact:
     email: support@swagger.io
@@ -495,6 +495,44 @@ paths:
             additionalProperties: true
             type: object
       summary: History of rented book [ONLY FOR USER]
+      tags:
+      - History
+  /api/history/revenue:
+    get:
+      consumes:
+      - application/json
+      description: Get total revenue from all returned books
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message : string, Revenue(USD): float64'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get total revenue [ONLY FOR ADMIN]
       tags:
       - History
   /api/rent:
