@@ -12,8 +12,10 @@ import (
 	"math/rand"
 	"net/http"
 	"net/http/httputil"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 )
 
@@ -192,7 +194,7 @@ func (r *Repo) ReturnBook(user_id, rent_id uint, p *models.RentPayment) (models.
 			if err != nil {
 				return err
 			}
-			if paymentRespons.Status != "COMPLETED" {
+			if paymentRespons.Status != "" && paymentRespons.Status != "COMPLETED" {
 				return fmt.Errorf(paymentRespons.Message)
 			}
 		}
@@ -212,7 +214,7 @@ func (r *Repo) ReturnBook(user_id, rent_id uint, p *models.RentPayment) (models.
 		payment.RentID = rent.RentID
 		payment.PaymentDate = rent.ReturnedAt
 		payment.PaymentAmount = total_price
-		payment.PaymentMethod = p.PaymentMethod
+		payment.PaymentMethod = p.PaymentMethod + p.BankCode
 		res := r.DB.Create(&payment)
 		if res.Error != nil {
 			return res.Error
@@ -225,7 +227,7 @@ func (r *Repo) ReturnBook(user_id, rent_id uint, p *models.RentPayment) (models.
 		rb.TotalPrice = total_price
 		rb.ReturnedAt = returned_at
 		rb.DaysRented = days_rented
-		rb.PaymentMethod = p.PaymentMethod
+		rb.PaymentMethod = p.PaymentMethod + p.BankCode
 		return nil
 	})
 
@@ -253,7 +255,10 @@ func (r *Repo) VAPayment(user_id, rent_id uint, amount float64, bank_code string
 	if err != nil {
 		return models.PaymentResponse{}, err
 	}
-	log.Println(paymentRespon)
+	if paymentRespon.Status != "COMPLETED" {
+		log.Println(paymentRespon)
+		return models.PaymentResponse{}, fmt.Errorf(paymentRespon.Message)
+	}
 	return paymentRespon, nil
 }
 
@@ -265,7 +270,11 @@ func randGenerator() int {
 }
 
 func CreateVirtualAccount(full_name string, user_id, rent_id uint, bank_code string) (models.VAResponse, error) {
-	apiKey := "xnd_development_tT8Uulp13l497VsTfUzzdz7Jnf49qmJiDSRkcEbiYthiXtI9eiaYunUVdXNe"
+	err := godotenv.Load()
+	if err != nil {
+		return models.VAResponse{}, fmt.Errorf("error opening .env")
+	}
+	apiKey := os.Getenv("API_KEY")
 	url := "https://api.xendit.co/callback_virtual_accounts"
 
 	type bodyReq struct {
@@ -308,28 +317,6 @@ func CreateVirtualAccount(full_name string, user_id, rent_id uint, bank_code str
 	b64 := base64.StdEncoding.EncodeToString([]byte(auth))
 	req.Header.Set("Authorization", "Basic "+b64)
 
-	// req.Header.Set("Authorization", apiKey)
-
-	// req.SetBasicAuth(apiKey, "")
-
-	// // send the request
-	// resp, err := http.DefaultClient.Do(req)
-	// if err != nil {
-	// 	return models.VAResponse{}, err
-	// }
-	// defer resp.Body.Close()
-	// // open the request
-	// body, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	return models.VAResponse{}, err
-	// }
-
-	// // unmarshall body
-	// va := models.VAResponse{}
-	// if err := json.Unmarshal(body, &va); err != nil {
-	// 	return models.VAResponse{}, err
-	// }
-
 	// Create a new HTTP client and execute the request
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -355,12 +342,15 @@ func CreateVirtualAccount(full_name string, user_id, rent_id uint, bank_code str
 		return models.VAResponse{}, err
 	}
 
-	// log.Println("creating va success", va)
 	return va, err
 }
 
 func SimulatePayment(va *models.VAResponse, amount float64) (models.PaymentResponse, error) {
-	apiKey := "xnd_development_tT8Uulp13l497VsTfUzzdz7Jnf49qmJiDSRkcEbiYthiXtI9eiaYunUVdXNe"
+	err := godotenv.Load()
+	if err != nil {
+		return models.PaymentResponse{}, fmt.Errorf("error opening .env")
+	}
+	apiKey := os.Getenv("API_KEY")
 	url := fmt.Sprintf("https://api.xendit.co/callback_virtual_accounts/external_id=%s/simulate_payment", va.ExternalID)
 	log.Println(url)
 	type bReq struct {
@@ -386,26 +376,6 @@ func SimulatePayment(va *models.VAResponse, amount float64) (models.PaymentRespo
 	b64 := base64.StdEncoding.EncodeToString([]byte(auth))
 	req.Header.Set("Authorization", "Basic "+b64)
 
-	// req.Header.Add("Authorization", "xnd_development_cR3ylqJJEUrcEesGiQFO4pPxPalg4yj2lYEHFUcrKiP0v6Wo5lNlL9ugbSCGHVOZ")
-
-	// // send the request
-	// resp, err := http.DefaultClient.Do(req)
-	// if err != nil {
-	// 	return models.PaymentResponse{}, err
-	// }
-	// defer resp.Body.Close()
-
-	// // open the request
-	// body, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	return models.PaymentResponse{}, err
-	// }
-
-	// // unmarshall body
-	// pr := models.PaymentResponse{}
-	// if err := json.Unmarshal(body, &pr); err != nil {
-	// 	return models.PaymentResponse{}, err
-	// }
 
 	// Create a new HTTP client and execute the request
 	client := &http.Client{}
@@ -425,9 +395,6 @@ func SimulatePayment(va *models.VAResponse, amount float64) (models.PaymentRespo
 	reqDump, _ := httputil.DumpRequest(req, true)
 	log.Printf("REQUEST:\n%s", string(reqDump))
 	log.Printf("RESPONSE:\n%s", body)
-
-	// log.Println("creating va success", va)
-	// return models.PaymentResponse{}, err
 
 	// unmarshall body
 	pr := models.PaymentResponse{}
