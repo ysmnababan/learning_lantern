@@ -1,5 +1,71 @@
 basePath: /
 definitions:
+  models.Book:
+    properties:
+      author:
+        type: string
+      book_id:
+        type: integer
+      book_name:
+        type: string
+      category:
+        type: string
+      description:
+        type: string
+      publisher:
+        type: string
+      rental_cost:
+        type: number
+      stock:
+        type: integer
+    type: object
+  models.BookAvailable:
+    properties:
+      author:
+        type: string
+      book_id:
+        type: integer
+      book_name:
+        type: string
+      category:
+        type: string
+      description:
+        type: string
+      publisher:
+        type: string
+      rental_cost:
+        type: number
+    type: object
+  models.BookRequest:
+    properties:
+      author:
+        type: string
+      book_name:
+        type: string
+      category:
+        type: string
+      description:
+        type: string
+      publisher:
+        type: string
+      rental_cost:
+        type: number
+      stock:
+        type: integer
+    type: object
+  models.BookUnavailable:
+    properties:
+      book_id:
+        type: integer
+      book_name:
+        type: string
+      deadline:
+        type: string
+      rent_at:
+        type: string
+      rent_by:
+        type: string
+    type: object
   models.TopUpReq:
     properties:
       deposit:
@@ -82,6 +148,257 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /api/book:
+    post:
+      consumes:
+      - application/json
+      description: Add new book to library
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Books to be inserted
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/models.BookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Book'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Add new book to library [ONLY FOR ADMIN]
+      tags:
+      - Books
+  /api/book/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete book from library database
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Book'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete book [ONLY FOR ADMIN]
+      tags:
+      - Books
+    put:
+      consumes:
+      - application/json
+      description: Edit book to library but you can insert body data that you need
+        to update only
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Books to be inserted
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/models.BookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Book'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Edit book to library [ONLY FOR ADMIN]
+      tags:
+      - Books
+  /api/books:
+    get:
+      consumes:
+      - application/json
+      description: Get all books
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Book'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all books
+      tags:
+      - Books
+  /api/books/available:
+    get:
+      consumes:
+      - application/json
+      description: Get all books that can be rented, stock >0
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.BookAvailable'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all books
+      tags:
+      - Books
+  /api/books/unavailable:
+    get:
+      consumes:
+      - application/json
+      description: Get all books that can be rented but now is out of stock because
+        another user still using it
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.BookUnavailable'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all unavailable books [ONLY FOR USER]
+      tags:
+      - Books
   /api/user:
     get:
       consumes:
