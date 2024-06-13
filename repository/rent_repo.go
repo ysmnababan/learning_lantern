@@ -85,7 +85,11 @@ func (r *Repo) GetRentedBooks(user_id uint) ([]models.RentHistory, error) {
 	if res.Error != nil {
 		return nil, helper.ErrQuery
 	}
-
+	for i, _ := range history {
+		if history[i].DaysRented == 0 {
+			history[i].DaysRented = 1
+		}
+	}
 	return history, nil
 }
 
@@ -120,7 +124,6 @@ func (r *Repo) GetStillRentingBookByID(user_id uint, rent_id uint) (models.Rente
 
 	return resp, nil
 }
-
 
 func (r *Repo) ReturnBookCash(user_id, rent_id uint) (models.ReturnBook, error) {
 	var rent models.Rent
