@@ -5,16 +5,17 @@ import (
 	"learning_lantern/router"
 	"os"
 
-	// _ "learning-lantern/docs"
-
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
-	// echoSwagger "github.com/swaggo/echo-swagger"
+
+	echoSwagger "github.com/swaggo/echo-swagger"
+
+	_ "learning_lantern/docs"
 )
 
 // @title Swagger Example API
 // @version 1.0
-// @description This is a Restful API Gym App
+// @description This is a Restful API Learning Lantern Library
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
@@ -24,7 +25,7 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host secure-shore-13090-19e4736be1d4.herokuapp.com
+// @host localhost:8080
 // @BasePath /
 func main() {
 	db := config.Connect()
@@ -37,7 +38,7 @@ func main() {
 		panic("unable to open .env file:")
 	}
 
-	// e.GET("/swagger/*", echoSwagger.WrapHandler)
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 
 }

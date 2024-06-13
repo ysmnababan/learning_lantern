@@ -1,0 +1,322 @@
+basePath: /
+definitions:
+  models.TopUpReq:
+    properties:
+      deposit:
+        type: number
+    type: object
+  models.UserDetailResponse:
+    properties:
+      address:
+        type: string
+      age:
+        type: integer
+      deposit:
+        type: number
+      email:
+        type: string
+      fname:
+        type: string
+      lname:
+        type: string
+      phone_number:
+        type: string
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  models.UserRegister:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  models.UserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.UserResponse:
+    properties:
+      deposit:
+        type: number
+      email:
+        type: string
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  models.UserUpdateRequest:
+    properties:
+      address:
+        type: string
+      age:
+        type: integer
+      fname:
+        type: string
+      lname:
+        type: string
+      phone_number:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a Restful API Learning Lantern Library
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /api/user:
+    get:
+      consumes:
+      - application/json
+      description: must be authenticated user and return user detail data
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserDetailResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get info about a user
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: must be authenticated user and update detail info of a user
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Data to be updated
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserDetailResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update user information
+      tags:
+      - User
+  /api/user/topup:
+    put:
+      consumes:
+      - application/json
+      description: must be authenticated user and update detail info of a user
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Data to be updated
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/models.TopUpReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message : string, Amount of Deposit: float64'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update user information
+      tags:
+      - User
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      description: must be authenticated user and return all user data
+      parameters:
+      - default: ""
+        description: Authentication token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.UserDetailResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get info about a user ONLY FOR ADMIN
+      tags:
+      - User
+  /api/users/login:
+    post:
+      consumes:
+      - application/json
+      description: login as user and generate token
+      parameters:
+      - description: Login using email and password
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message : string, token: string'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login as user
+      tags:
+      - User
+  /api/users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register as user and return user data
+      parameters:
+      - description: Register new user
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register as user
+      tags:
+      - User
+swagger: "2.0"

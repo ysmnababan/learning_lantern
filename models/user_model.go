@@ -13,6 +13,17 @@ type User struct {
 	JwtToken      string    `json:"jwt_token" gorm:"type:text"`
 }
 
+type UserRegister struct {
+	Username      string    `json:"username" gorm:"type:varchar(255);not null"`
+	Email         string    `json:"email" gorm:"type:varchar(255);unique;not null"`
+	Password      string    `json:"password" gorm:"type:varchar(255);not null"`
+}
+
+type UserRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type UserResponse struct {
 	UserID   uint    `json:"user_id" gorm:"primaryKey;autoIncrement"`
 	Username string  `json:"username" gorm:"type:varchar(255);not null"`

@@ -94,16 +94,16 @@ func (s *UserController) Register(c echo.Context) error {
 
 // GetUserInfo godoc
 // @Summary Get info about a user
-// @Description must be authenticated user and return user detail data using third party API
+// @Description must be authenticated user and return user detail data
 // @Tags User
 // @Accept  json
 // @Produce  json
-// @Param   Auth  header  string  true  "Authentication token"  default()
-// @Success 200 {object} models.UserResponseDetail
+// @Param   Authorization  header  string  true  "Authentication token"  default()
+// @Success 200 {object} models.UserDetailResponse
 // @Failure 400 {object} map[string]interface{}
 // @Failure 404 {object} map[string]interface{}
 // @Failure 500 {object} map[string]interface{}
-// @Router /api/users [get]
+// @Router /api/user [get]
 func (s *UserController) GetUserInfo(c echo.Context) error {
 	cred := helper.GetCredential(c)
 	resp, err := s.UserRepo.GetInfo(cred.UserID)
@@ -113,6 +113,18 @@ func (s *UserController) GetUserInfo(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Get User Info", "User": resp})
 }
 
+// GetAllUser godoc
+// @Summary Get info about a user ONLY FOR ADMIN
+// @Description must be authenticated user and return all user data
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param   Authorization  header  string  true  "Authentication token"  default()
+// @Success 200 {array} models.UserDetailResponse
+// @Failure 400 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /api/users [get]
 func (s *UserController) GetAllUser(c echo.Context) error {
 	cred := helper.GetCredential(c)
 	if cred.Role != "admin" {
@@ -126,6 +138,19 @@ func (s *UserController) GetAllUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Get All User", "User": resp})
 }
 
+// UpdateUser godoc
+// @Summary Update user information
+// @Description must be authenticated user and update detail info of a user
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param   Authorization  header  string  true  "Authentication token"  default()
+// @Param student body models.UserUpdateRequest true "Data to be updated"
+// @Success 200 {object} models.UserDetailResponse
+// @Failure 400 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /api/user [put]
 func (s *UserController) UpdateUser(c echo.Context) error {
 	cred := helper.GetCredential(c)
 	var GetU models.UserUpdateRequest
@@ -147,6 +172,19 @@ func (s *UserController) UpdateUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "User Data Updated", "User": respU})
 }
 
+// TopUpDeposit godoc
+// @Summary Update user information
+// @Description must be authenticated user and update detail info of a user
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param   Authorization  header  string  true  "Authentication token"  default()
+// @Param student body models.TopUpReq true "Data to be updated"
+// @Success 200 {object} map[string]interface{} "message : string, Amount of Deposit: float64"
+// @Failure 400 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /api/user/topup [put]
 func (s *UserController) TopUpDeposit(c echo.Context) error {
 	cred := helper.GetCredential(c)
 	if cred.Role != "user" {

@@ -10,6 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
+
+
 func SetupRouter(e *echo.Echo, db *gorm.DB) {
 	// using logger for each api
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
