@@ -54,7 +54,9 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 		service.POST("/rent", rc.RentBook)
 		service.GET("/rents", rc.MyRentedBooks)
 		service.GET("/rent/:id", rc.DetailRentedBook)
-		service.POST("/rent/return/:id", rc.ReturnBook)
+		// service.POST("/rent/return/:id", rc.ReturnBook)
+		service.POST("/rent/return_cash/:id", rc.ReturnBookCash)
+		service.POST("/rent/return_va/:id", rc.ReturnBookVA)
 
 		// for history
 		service.GET("/history/rent", rc.MyRentHistory)

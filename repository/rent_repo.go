@@ -1,21 +1,12 @@
 package repository
 
 import (
-	"bytes"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
-	"io"
 	"learning_lantern/helper"
 	"learning_lantern/models"
 	"log"
-	"math/rand"
-	"net/http"
-	"net/http/httputil"
-	"os"
 	"time"
 
-	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 )
 
@@ -25,7 +16,9 @@ type RentRepo interface {
 	GetStillRentingBooks(user_id uint) ([]models.RentedResponse, error)
 	GetStillRentingBookByID(user_id uint, book_id uint) (models.RentedResponse, error)
 	ReturnBook(user_id, rent_id uint, p *models.RentPayment) (models.ReturnBook, error)
-	VAPayment(user_id, rent_id uint, amount float64, bank_code string) (models.PaymentResponse, error)
+	VAPayment(user_id, rent_id uint, amount float64, bank_code string) (models.VAResponse, models.PaymentResponse, error)
+	ReturnBookCash(user_id, rent_id uint) (models.ReturnBook, error)
+	ReturnBookVA(user_id, rent_id uint, p *models.RentPayment) (models.ReturnBookVA, error)
 }
 
 func (r *Repo) CreateNewRent(user_id uint, req *models.RentRequest) (models.RentResponse, error) {
@@ -190,7 +183,8 @@ func (r *Repo) ReturnBook(user_id, rent_id uint, p *models.RentPayment) (models.
 			u.Deposit = u.Deposit - total_price
 			r.DB.Save(&u)
 		} else if p.PaymentMethod == "VA" {
-			paymentRespons, err := r.VAPayment(user_id, rent_id, total_price, p.BankCode)
+			// virtual account only
+			_, paymentRespons, err := r.VAPayment(user_id, rent_id, total_price, p.BankCode)
 			if err != nil {
 				return err
 			}
@@ -237,169 +231,238 @@ func (r *Repo) ReturnBook(user_id, rent_id uint, p *models.RentPayment) (models.
 	return rb, nil
 }
 
-func (r *Repo) VAPayment(user_id, rent_id uint, amount float64, bank_code string) (models.PaymentResponse, error) {
+func (r *Repo) ReturnBookCash(user_id, rent_id uint) (models.ReturnBook, error) {
+	var rent models.Rent
+	res := r.DB.Where("rent_status = 'pending' AND user_id = ?", user_id).First(&rent, rent_id)
+	if res.Error != nil {
+		if res.Error == gorm.ErrRecordNotFound {
+			return models.ReturnBook{}, helper.ErrNoData
+		}
+		return models.ReturnBook{}, helper.ErrQuery
+	}
+
+	// start transaction
+	rb := models.ReturnBook{}
+
+	err := r.DB.Transaction(func(tx *gorm.DB) error {
+		// count how may days
+		now := time.Now()
+		returned_at := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+		deadline := time.Date(rent.Deadline.Year(), rent.Deadline.Month(), rent.Deadline.Day(), 0, 0, 0, 0, time.UTC)
+		rent_at := time.Date(rent.RentAt.Year(), rent.RentAt.Month(), rent.RentAt.Day(), 0, 0, 0, 0, time.UTC)
+
+		returnPlan := int(deadline.Sub(rent_at).Hours() / 24)
+		days_rented := int(returned_at.Sub(rent_at).Hours() / 24)
+		if days_rented == 0 {
+			days_rented++
+		}
+
+		helper.Logging(nil).Info("return plan: ", returnPlan)
+		helper.Logging(nil).Info("days rented: ", days_rented)
+
+		fineDay := days_rented - returnPlan
+
+		// get renting price for a day
+		// renting price is calculated based on deadline and fine (10% from rent price each day)
+		b := models.Book{}
+		r.DB.First(&b, rent.BookID)
+
+		var fine float64 = b.RentalCost * float64(fineDay) * 1.1 // this 1.1 is fine rate
+		if fine < 0 {
+			// if return date not exceeded deadline, fine is 0
+			fine = 0
+		}
+		helper.Logging(nil).Info("fine: ", fine)
+
+		total_price := float64(returnPlan)*b.RentalCost + fine
+		helper.Logging(nil).Info("total price: ", total_price)
+
+		// get user balance
+		u := models.User{UserID: user_id}
+		r.DB.First(&u)
+		deposit := u.Deposit
+		if deposit < total_price {
+			return helper.ErrUnsufficientBalance
+		}
+
+		// pay cash, substract from balance
+		u.Deposit = u.Deposit - total_price
+		r.DB.Save(&u)
+
+		// update rent status
+		rent.RentStatus = "returned"
+		rent.TotalPrice = total_price
+		rent.ReturnedAt = time.Now().Truncate(time.Hour)
+		r.DB.Save(rent)
+
+		// increase book stock
+		b.Stock = b.Stock + 1
+		r.DB.Save(&b)
+
+		// create new payment
+		var payment models.Payment
+		payment.RentID = rent.RentID
+		payment.PaymentDate = rent.ReturnedAt
+		payment.PaymentAmount = total_price
+		payment.PaymentMethod = "Cash"
+		res := r.DB.Create(&payment)
+		if res.Error != nil {
+			return res.Error
+		}
+
+		// update data for response
+		rb.BookID = b.BookID
+		rb.RentID = rent.RentID
+		rb.RentAt = rent.RentAt
+		rb.TotalPrice = total_price
+		rb.ReturnedAt = returned_at
+		rb.DaysRented = days_rented
+		rb.PaymentMethod = "Cash"
+		return nil
+	})
+
+	if err != nil {
+		return models.ReturnBook{}, err
+	}
+	return rb, nil
+}
+
+func (r *Repo) ReturnBookVA(user_id, rent_id uint, p *models.RentPayment) (models.ReturnBookVA, error) {
+	var rent models.Rent
+	res := r.DB.Where("rent_status = 'pending' AND user_id = ?", user_id).First(&rent, rent_id)
+	if res.Error != nil {
+		if res.Error == gorm.ErrRecordNotFound {
+			return models.ReturnBookVA{}, helper.ErrNoData
+		}
+		return models.ReturnBookVA{}, helper.ErrQuery
+	}
+
+	// start transaction
+	rb := models.ReturnBookVA{}
+
+	err := r.DB.Transaction(func(tx *gorm.DB) error {
+		// count how may days
+		now := time.Now()
+		returned_at := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+		deadline := time.Date(rent.Deadline.Year(), rent.Deadline.Month(), rent.Deadline.Day(), 0, 0, 0, 0, time.UTC)
+		rent_at := time.Date(rent.RentAt.Year(), rent.RentAt.Month(), rent.RentAt.Day(), 0, 0, 0, 0, time.UTC)
+
+		returnPlan := int(deadline.Sub(rent_at).Hours() / 24)
+		days_rented := int(returned_at.Sub(rent_at).Hours() / 24)
+		if days_rented == 0 {
+			days_rented++
+		}
+
+		helper.Logging(nil).Info("return plan: ", returnPlan)
+		helper.Logging(nil).Info("days rented: ", days_rented)
+
+		fineDay := days_rented - returnPlan
+
+		// get renting price for a day
+		// renting price is calculated based on deadline and fine (10% from rent price each day)
+		b := models.Book{}
+		r.DB.First(&b, rent.BookID)
+
+		var fine float64 = b.RentalCost * float64(fineDay) * 1.1 // this 1.1 is fine rate
+		if fine < 0 {
+			// if return date not exceeded deadline, fine is 0
+			fine = 0
+		}
+		helper.Logging(nil).Info("fine: ", fine)
+
+		total_price := float64(returnPlan)*b.RentalCost + fine
+		helper.Logging(nil).Info("total price: ", total_price)
+
+		// get user balance
+		u := models.User{UserID: user_id}
+		r.DB.First(&u)
+		deposit := u.Deposit
+		if deposit < total_price {
+			return helper.ErrUnsufficientBalance
+		}
+
+		// if user balance is enough, pay the price
+		// if payment is VA, use 3rd party API to pay
+
+		// before payment, va only accept in IDR, so exchange USD to IDR using 3rd party API
+		rateExchange, err := helper.GetExchangeRate("USD", "IDR")
+		if err != nil {
+			return err
+		}
+		total_price_exchange := total_price * rateExchange
+
+		// virtual account only
+		va, paymentRespons, err := r.VAPayment(user_id, rent_id, total_price_exchange, p.BankCode)
+		if err != nil {
+			return err
+		}
+		if paymentRespons.Status != "" && paymentRespons.Status != "COMPLETED" {
+			return fmt.Errorf(paymentRespons.Message)
+		}
+
+		// update rent status
+		rent.RentStatus = "returned"
+		rent.TotalPrice = total_price
+		rent.ReturnedAt = time.Now().Truncate(time.Hour)
+		r.DB.Save(rent)
+
+		// increase book stock
+		b.Stock = b.Stock + 1
+		r.DB.Save(&b)
+
+		// create new payment
+		var payment models.Payment
+		payment.RentID = rent.RentID
+		payment.PaymentDate = rent.ReturnedAt
+		payment.PaymentAmount = total_price
+		payment.PaymentMethod = p.PaymentMethod + " " + p.BankCode
+		res := r.DB.Create(&payment)
+		if res.Error != nil {
+			return res.Error
+		}
+
+		// update data for response
+		rb.BookID = b.BookID
+		rb.RentID = rent.RentID
+		rb.RentAt = rent.RentAt
+		rb.TotalPrice = total_price
+		rb.ReturnedAt = returned_at
+		rb.DaysRented = days_rented
+		rb.PaymentMethod = p.PaymentMethod + p.BankCode
+		rb.VAResponse = &va
+		rb.PaymentResponse = &paymentRespons
+		rb.ExchangeRate = rateExchange
+		rb.PriceInIDR = total_price_exchange
+		return nil
+	})
+
+	if err != nil {
+		return models.ReturnBookVA{}, err
+	}
+	return rb, nil
+}
+
+func (r *Repo) VAPayment(user_id, rent_id uint, amount float64, bank_code string) (models.VAResponse, models.PaymentResponse, error) {
 	full_name := ""
 	res := r.DB.Model(&models.User{}).Select("CONCAT (ud.fname, ' ',ud.lname) as full_name").
 		Joins("LEFT JOIN user_details as ud ON ud.user_id = users.user_id").Where("users.user_id = ?", user_id).Find(&full_name)
 	if res.Error != nil {
-		return models.PaymentResponse{}, res.Error
+		return models.VAResponse{}, models.PaymentResponse{}, res.Error
 	}
 	log.Println(full_name)
-	va, err := CreateVirtualAccount(full_name, user_id, rent_id, bank_code)
+	va, err := helper.CreateVirtualAccount(full_name, user_id, rent_id, bank_code)
 	if err != nil {
-		return models.PaymentResponse{}, err
+		return models.VAResponse{}, models.PaymentResponse{}, err
 	}
 	log.Println(va)
 
-	paymentRespon, err := SimulatePayment(&va, amount)
+	paymentRespon, err := helper.SimulatePayment(&va, amount)
 	if err != nil {
-		return models.PaymentResponse{}, err
+		return models.VAResponse{}, models.PaymentResponse{}, err
 	}
 	if paymentRespon.Status != "COMPLETED" {
 		log.Println(paymentRespon)
-		return models.PaymentResponse{}, fmt.Errorf(paymentRespon.Message)
+		return models.VAResponse{}, models.PaymentResponse{}, fmt.Errorf(paymentRespon.Message)
 	}
-	return paymentRespon, nil
-}
-
-func randGenerator() int {
-	// Generate a 6-digit random integer
-	min := 100000
-	max := 999999
-	return rand.Intn(max-min+1) + min
-}
-
-func CreateVirtualAccount(full_name string, user_id, rent_id uint, bank_code string) (models.VAResponse, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return models.VAResponse{}, fmt.Errorf("error opening .env")
-	}
-	apiKey := os.Getenv("API_KEY")
-	url := "https://api.xendit.co/callback_virtual_accounts"
-
-	type bodyReq struct {
-		ExternalID     string `json:"external_id"`
-		BankCode       string `json:"bank_code"`
-		Name           string `json:"name"`
-		IsClosed       bool   `json:"is_closed"`
-		ExpirationDate string `json:"expiration_date"`
-		Country        string `json:"country"`
-		IsSingleUse    bool   `json:"is_single_use"`
-		Currency       string `json:"currency"`
-	}
-
-	var bq bodyReq
-	bq.ExternalID = fmt.Sprintf("VA_fixed-%v%v%v", user_id, rent_id, randGenerator())
-	bq.BankCode = bank_code
-	bq.Name = full_name
-	bq.IsClosed = false
-	bq.ExpirationDate = time.Now().Add(24 * time.Hour).Format(time.RFC3339)
-	bq.Country = "ID"
-	bq.IsSingleUse = true
-	bq.Currency = "IDR"
-
-	// marshall body
-	bodyReqJSON, err := json.Marshal(bq)
-	if err != nil {
-		return models.VAResponse{}, err
-	}
-	log.Println(bq)
-
-	// create request
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(bodyReqJSON))
-	if err != nil {
-		return models.VAResponse{}, err
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	// Encode API key to Base64
-	auth := fmt.Sprintf("%s:", apiKey)
-	b64 := base64.StdEncoding.EncodeToString([]byte(auth))
-	req.Header.Set("Authorization", "Basic "+b64)
-
-	// Create a new HTTP client and execute the request
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return models.VAResponse{}, err
-	}
-	defer resp.Body.Close()
-
-	// Read the response body
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return models.VAResponse{}, err
-	}
-
-	// For debugging, log the request and response
-	reqDump, _ := httputil.DumpRequest(req, true)
-	log.Printf("REQUEST:\n%s", string(reqDump))
-	log.Printf("RESPONSE:\n%s", body)
-
-	// unmarshall body
-	va := models.VAResponse{}
-	if err := json.Unmarshal(body, &va); err != nil {
-		return models.VAResponse{}, err
-	}
-
-	return va, err
-}
-
-func SimulatePayment(va *models.VAResponse, amount float64) (models.PaymentResponse, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return models.PaymentResponse{}, fmt.Errorf("error opening .env")
-	}
-	apiKey := os.Getenv("API_KEY")
-	url := fmt.Sprintf("https://api.xendit.co/callback_virtual_accounts/external_id=%s/simulate_payment", va.ExternalID)
-	log.Println(url)
-	type bReq struct {
-		Amount float64 `json:"amount"`
-	}
-
-	bq := bReq{Amount: amount}
-	// marshall body
-	bodyReqJSON, err := json.Marshal(&bq)
-	if err != nil {
-		return models.PaymentResponse{}, err
-	}
-	log.Println(bodyReqJSON)
-
-	// create request
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(bodyReqJSON))
-	if err != nil {
-		return models.PaymentResponse{}, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	// Encode API key to Base64
-	auth := fmt.Sprintf("%s:", apiKey)
-	b64 := base64.StdEncoding.EncodeToString([]byte(auth))
-	req.Header.Set("Authorization", "Basic "+b64)
-
-
-	// Create a new HTTP client and execute the request
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return models.PaymentResponse{}, err
-	}
-	defer resp.Body.Close()
-
-	// Read the response body
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return models.PaymentResponse{}, err
-	}
-
-	// For debugging, log the request and response
-	reqDump, _ := httputil.DumpRequest(req, true)
-	log.Printf("REQUEST:\n%s", string(reqDump))
-	log.Printf("RESPONSE:\n%s", body)
-
-	// unmarshall body
-	pr := models.PaymentResponse{}
-	if err := json.Unmarshal(body, &pr); err != nil {
-		return models.PaymentResponse{}, err
-	}
-	return pr, nil
+	return va, paymentRespon, nil
 }

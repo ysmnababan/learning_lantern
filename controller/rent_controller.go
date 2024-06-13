@@ -89,7 +89,75 @@ func (s *RentController) DetailRentedBook(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Book that is still renting", "Books": resp})
 }
 
-func (s *RentController) ReturnBook(c echo.Context) error {
+// func (s *RentController) ReturnBook(c echo.Context) error {
+// 	cred := helper.GetCredential(c)
+// 	if cred.Role != "user" {
+// 		return helper.ParseError(helper.ErrOnlyUser, c)
+// 	}
+
+// 	// get rent id
+// 	rent_id, err := strconv.Atoi(c.Param("id"))
+// 	if err != nil {
+// 		return helper.ParseError(helper.ErrInvalidId, c)
+// 	}
+
+// 	// get request data
+// 	var GetR models.RentPayment
+// 	err = c.Bind(&GetR)
+// 	if err != nil {
+// 		return helper.ParseError(helper.ErrBindJSON, c)
+// 	}
+
+// 	//validate payment requirement
+// 	if GetR.PaymentMethod == "" || !(GetR.PaymentMethod == "cash" || GetR.PaymentMethod == "VA") {
+// 		return helper.ParseError(helper.ErrParam, c)
+// 	}
+
+// 	if GetR.PaymentMethod == "VA" && !(GetR.BankCode == "BCA" ||
+// 		GetR.BankCode == "BNI" ||
+// 		GetR.BankCode == "BRI" ||
+// 		GetR.BankCode == "BJB" ||
+// 		GetR.BankCode == "BSI" ||
+// 		GetR.BankCode == "BNC" ||
+// 		GetR.BankCode == "CIMB" ||
+// 		GetR.BankCode == "DBS" ||
+// 		GetR.BankCode == "MANDIRI" ||
+// 		GetR.BankCode == "PERMATA" ||
+// 		GetR.BankCode == "SAHABAT_SAMPOERNA") {
+// 		return helper.ParseError(helper.ErrParam, c)
+// 	}
+
+// 	resp, err := s.RentRepo.ReturnBook(cred.UserID, uint(rent_id), &GetR)
+// 	if err != nil {
+// 		return helper.ParseError(err, c)
+// 	}
+
+// 	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Book returned successfully", "Detail": resp})
+
+// }
+
+func (s *RentController) ReturnBookCash(c echo.Context) error {
+	cred := helper.GetCredential(c)
+	if cred.Role != "user" {
+		return helper.ParseError(helper.ErrOnlyUser, c)
+	}
+
+	// get rent id
+	rent_id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return helper.ParseError(helper.ErrInvalidId, c)
+	}
+
+	resp, err := s.RentRepo.ReturnBookCash(cred.UserID, uint(rent_id))
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Book returned successfully", "Detail": resp})
+
+}
+
+func (s *RentController) ReturnBookVA(c echo.Context) error {
 	cred := helper.GetCredential(c)
 	if cred.Role != "user" {
 		return helper.ParseError(helper.ErrOnlyUser, c)
@@ -109,7 +177,7 @@ func (s *RentController) ReturnBook(c echo.Context) error {
 	}
 
 	//validate payment requirement
-	if GetR.PaymentMethod == "" || !(GetR.PaymentMethod == "cash" || GetR.PaymentMethod == "VA") {
+	if !(GetR.PaymentMethod == "" || GetR.PaymentMethod == "VA") {
 		return helper.ParseError(helper.ErrParam, c)
 	}
 
@@ -127,7 +195,7 @@ func (s *RentController) ReturnBook(c echo.Context) error {
 		return helper.ParseError(helper.ErrParam, c)
 	}
 
-	resp, err := s.RentRepo.ReturnBook(cred.UserID, uint(rent_id), &GetR)
+	resp, err := s.RentRepo.ReturnBookVA(cred.UserID, uint(rent_id), &GetR)
 	if err != nil {
 		return helper.ParseError(err, c)
 	}
@@ -139,7 +207,7 @@ func (s *RentController) ReturnBook(c echo.Context) error {
 func (s *RentController) CobaVA(c echo.Context) error {
 	fmt.Println("here")
 
-	resp, err := s.RentRepo.VAPayment(12, 1, 100.0, "BNI")
+	_, resp, err := s.RentRepo.VAPayment(12, 1, 100.0, "BNI")
 	if err != nil {
 		return helper.ParseError(err, c)
 	}
