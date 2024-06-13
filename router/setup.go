@@ -59,5 +59,8 @@ func SetupRouter(e *echo.Echo, db *gorm.DB) {
 		// for history
 		service.GET("/history/rent", rc.MyRentHistory)
 		service.GET("/history/revenue", rp.GetTotalRevenue)
+
+		// test 3rd party api
+		service.GET("/cobava", rc.CobaVA)
 	}
 }

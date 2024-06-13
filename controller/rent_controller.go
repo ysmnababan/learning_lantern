@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"learning_lantern/helper"
 	"learning_lantern/models"
 	"learning_lantern/repository"
@@ -108,7 +109,21 @@ func (s *RentController) ReturnBook(c echo.Context) error {
 	}
 
 	//validate payment requirement
-	if GetR.PaymentMethod == "" || !(GetR.PaymentMethod == "cash" || GetR.PaymentMethod == "QRIS") {
+	if GetR.PaymentMethod == "" || !(GetR.PaymentMethod == "cash" || GetR.PaymentMethod == "VA") {
+		return helper.ParseError(helper.ErrParam, c)
+	}
+
+	if GetR.PaymentMethod == "VA" && !(GetR.BankCode == "BCA" ||
+		GetR.BankCode == "BNI" ||
+		GetR.BankCode == "BRI" ||
+		GetR.BankCode == "BJB" ||
+		GetR.BankCode == "BSI" ||
+		GetR.BankCode == "BNC" ||
+		GetR.BankCode == "CIMB" ||
+		GetR.BankCode == "DBS" ||
+		GetR.BankCode == "MANDIRI" ||
+		GetR.BankCode == "PERMATA" ||
+		GetR.BankCode == "SAHABAT_SAMPOERNA") {
 		return helper.ParseError(helper.ErrParam, c)
 	}
 
@@ -117,6 +132,17 @@ func (s *RentController) ReturnBook(c echo.Context) error {
 		return helper.ParseError(err, c)
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Book that is still renting", "Books": resp})
+	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Book returned successfully", "Detail": resp})
 
+}
+
+func (s *RentController) CobaVA(c echo.Context) error {
+	fmt.Println("here")
+
+	resp, err := s.RentRepo.VAPayment(12, 1, 100.0, "BNI")
+	if err != nil {
+		return helper.ParseError(err, c)
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"Message": "Book returned successfully", "Detail": resp})
 }
