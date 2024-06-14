@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"learning_lantern/helper"
 	"learning_lantern/models"
+	"log"
 	"os"
 	"time"
 
@@ -222,7 +223,7 @@ func (r *Repo) TopUp(user_id uint, amount float64) (float64, error) {
 	if res.Error != nil {
 		return 0, helper.ErrQuery
 	}
-
+	log.Println("HERE")
 	// update user deposit
 	user.Deposit = user.Deposit + amount
 	res = r.DB.Save(&user)

@@ -6,6 +6,7 @@ import (
 	"learning_lantern/helper"
 	"learning_lantern/models"
 	"learning_lantern/repository"
+	"log"
 	"testing"
 	"time"
 
@@ -107,6 +108,79 @@ func TestRegister_shouldFound(t *testing.T) {
 	assert.True(t, errors.Is(res, helper.ErrUserExists))
 
 	// Verify that all expectations were met
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
+
+func TestGetInfo(t *testing.T) {
+	// Create a mock database connection
+	sqlDB, db, mock := DbMock(t)
+	defer sqlDB.Close()
+
+	// Create a repository instance using the mock DB
+	repo := &repository.Repo{DB: db}
+
+	// Define expected data and mock responses
+	userRows := sqlmock.NewRows([]string{"user_id", "username", "email", "deposit"}).
+		AddRow(1, "john_doe", "john.doe@example.com", 100.0)
+
+	userDetailRows := sqlmock.NewRows([]string{"user_id", "fname", "lname", "address", "age", "phone_number"}).
+		AddRow(1, "John", "Doe", "123 Main St", 30, "1234567890")
+
+	// Define the expected SQL queries and responses
+	mock.ExpectQuery(`SELECT \* FROM "users" WHERE "users"."user_id" = \$1 ORDER BY "users"."user_id" LIMIT \$2`).WithArgs(1, 1).WillReturnRows(userRows)
+	mock.ExpectQuery(`SELECT \* FROM "user_details" WHERE user_id=\$1`).WithArgs(1, 1).WillReturnRows(userDetailRows)
+
+	// Call the method under test
+	result, err := repo.GetInfo(1)
+	log.Println(err)
+	// Assert the result
+	assert.NoError(t, err, "expected no error")
+	assert.Equal(t, uint(1), result.UserID)
+	assert.Equal(t, "john_doe", result.Username)
+	assert.Equal(t, "john.doe@example.com", result.Email)
+	assert.Equal(t, 100.0, result.Deposit)
+	assert.Equal(t, "John", result.Fname)
+	assert.Equal(t, "Doe", result.Lname)
+	assert.Equal(t, "123 Main St", result.Address)
+	assert.Equal(t, 30, result.Age)
+	assert.Equal(t, "1234567890", result.PhoneNumber)
+
+	// Ensure all expectations were met;
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
+func TestTopUp(t *testing.T) {
+	// Create a mock database connection
+	sqlDB, db, mock := DbMock(t)
+	defer sqlDB.Close()
+
+	// Create a repository instance using the mock DB
+	repo := &repository.Repo{DB: db}
+
+	// Define mock data for user
+
+	// Expectations for querying user by user_id
+	users := sqlmock.NewRows([]string{"user_id", "user_name", "email", "password", "role", "deposit", "last_login_date", "jwt_token"}).
+		AddRow(12, "", "yoland", "eabyYY", "user", 100, time.Now(), "")
+
+	mock.ExpectQuery(`SELECT \* FROM "users" WHERE "users"."user_id" = \$1 ORDER BY "users"."user_id" LIMIT \$2`).WithArgs(12, 1).WillReturnRows(users)
+
+	// Expectations for updating user deposit
+	mock.ExpectExec(`UPDATE "users" SET "deposit"=\$1 WHERE "user_id"=\$2`).
+		WithArgs(150.0, 12).
+		WillReturnResult(sqlmock.NewResult(12, 1)) // Mock update success
+
+	// Call the method under test
+	updatedDeposit, err := repo.TopUp(12, 50.0)
+
+	// Assert the result
+	assert.NoError(t, err, "expected no error")
+	assert.Equal(t, 150.0, updatedDeposit, "expected updated deposit to match")
+
+	// Ensure all expectations were met
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
